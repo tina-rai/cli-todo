@@ -137,6 +137,97 @@ else if (command === "edit") {
     }
 
 }
+else if (command === "search") {
+
+    if (!argument) {
+        console.log("❌ Please provide a search keyword.");
+        process.exit();
+    }
+
+    const tasks = loadTasks();
+
+    const results = tasks.filter(task =>
+        task.task.toLowerCase().includes(argument.toLowerCase())
+    );
+
+    if (results.length === 0) {
+        console.log("No matching tasks.");
+    } else {
+
+        console.log("\n🔍 Search Results\n");
+
+        results.forEach(task => {
+
+            const status = task.completed ? "✓" : " ";
+
+            console.log(`${task.id}. [${status}] ${task.task}`);
+
+        });
+
+    }
+
+}
+else if (command === "pending") {
+
+    const tasks = loadTasks();
+
+    const pendingTasks = tasks.filter(task => !task.completed);
+
+    if (pendingTasks.length === 0) {
+        console.log("yayieee No pending tasks.");
+        return;
+    }
+
+    console.log("\n⏳ Pending Tasks\n");
+
+    pendingTasks.forEach(task =>
+        console.log(`${task.id}. ${task.task}`)
+    );
+
+}
+else if (command === "completed") {
+
+    const tasks = loadTasks();
+
+    const completedTasks = tasks.filter(task => task.completed);
+
+    if (completedTasks.length === 0) {
+        console.log("No completed tasks.");
+        return;
+    }
+
+    console.log("\n✅ Completed Tasks\n");
+
+    completedTasks.forEach(task =>
+        console.log(`${task.id}. ${task.task}`)
+    );
+
+}
+else if (command === "help") {
+
+    console.log(`
+CLI Todo Commands
+
+add "task"
+list
+delete <id>
+complete <id>
+edit <id> "new task"
+search <keyword>
+pending
+completed
+help
+clear
+`);
+
+}
+else if (command === "clear") {
+
+    saveTasks([]);
+
+    console.log("🗑️ All tasks deleted.");
+
+}
 else {
 
     console.log("Unknown command.");

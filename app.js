@@ -2,6 +2,7 @@ const fs = require("fs");
 
 const command = process.argv[2];
 const argument = process.argv[3];
+const args = process.argv.slice(3);
 
 // Read tasks from JSON file
 function loadTasks() {
@@ -16,6 +17,11 @@ function saveTasks(tasks) {
 
 if (command === "add") {
 
+    if (!argument) {
+        console.log("oopsie doopsie alert! Please provide a task.");
+        process.exit();
+    }
+
     const tasks = loadTasks();
 
     const newTask = {
@@ -28,7 +34,7 @@ if (command === "add") {
 
     saveTasks(tasks);
 
-    console.log("✅ Task added!");
+    console.log(" ✓ Task added!");
 
 }
 else if (command === "list") {
@@ -68,7 +74,65 @@ else if (command === "delete") {
 
         saveTasks(updatedTasks);
 
-        console.log("✅ Task deleted.");
+        console.log("✓ Task deleted.");
+
+    }
+
+}
+else if (command === "complete") {
+
+    if (!argument) {
+        console.log("oopsie doopsie alert! Please provide a task ID.");
+        process.exit();
+    }
+
+    const tasks = loadTasks();
+
+    const id = Number(argument);
+
+    const task = tasks.find(task => task.id === id);
+
+    if (!task) {
+
+        console.log("Task not found.");
+
+    } else {
+
+        task.completed = true;
+
+        saveTasks(tasks);
+
+        console.log("✓ Task marked as complete.");
+
+    }
+
+}
+else if (command === "edit") {
+
+    if (args.length < 2) {
+        console.log("oopsie doopsie alert! Please provide a task ID and new task.");
+        process.exit();
+    }
+
+    const id = Number(args[0]);
+
+    const newTask = args.slice(1).join(" ");
+
+    const tasks = loadTasks();
+
+    const task = tasks.find(task => task.id === id);
+
+    if (!task) {
+
+        console.log("Task not found.");
+
+    } else {
+
+        task.task = newTask;
+
+        saveTasks(tasks);
+
+        console.log("✓ Task updated.");
 
     }
 
